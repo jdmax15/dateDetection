@@ -24,7 +24,13 @@ dateString = '''It was a bright and sunny day on 12-02-2022, the kind that makes
  blossoms blooming near the Eiffel Tower. 29/02/2001 29/02/2000 30/02/2000'''
 
 # Regex pattern for finding dates.
-dateRegex = re.compile(r'((\d{2}).(\d{2}).(\d{4}))')
+dateRegex = re.compile(r'''
+                       ((\d{2})     # Days
+                       .            # Any separator
+                       (\d{2})      # Months
+                       .            # Any separator
+                       (\d{4})      # Years
+                       )''', re.VERBOSE)
 
 matches = []
 formattedMatches = []
