@@ -1,27 +1,9 @@
 # Detects dates using regular expressions.
 #TODO: Use pyperclip to paste dates from the clipboard instead of using dateString and copy to clipboard after. Turn into a batch file. 
 
-import re
+import re, pyperclip
 
-monthDict = {'01': 'JAN',
-             '02': 'FEB',
-             '03': 'MAR',
-             '04': 'APR',
-             '05': 'MAY',
-             '06': 'JUN',
-             '07': 'JUL',
-             '08': 'AUG',
-             '09': 'SEP',
-             '10': 'OCT',
-             '11': 'NOV',
-             '12': 'DEV'}
-
-dateString = '''It was a bright and sunny day on 12-02-2022, the kind that makes everyone feel like going out
- for a walk. Sarah had a dentist appointment scheduled for 32_11_2024, which she dreaded. She was reminded of 
- how, on 22/08/2019, she had forgotten an appointment and ended up with a hefty fine. Luckily, her brother's 
- wedding on 03/13/2020 had gone smoothly despite the heavy rain that morning. Looking back, Sarah couldn't 
- believe how fast time had passed since her trip to Paris on 14 04 2017. She still remembered the cherry 
- blossoms blooming near the Eiffel Tower. 29/02/2001 29/02/2000 30/02/2000'''
+dateString = pyperclip.paste()
 
 # Regex pattern for finding dates.
 dateRegex = re.compile(r'''
@@ -39,7 +21,12 @@ for groups in dateRegex.findall(dateString):
 
 for date in matches:
     validDate = None
-    if date[2] in ['04', '06', '09', '11'] and int(date[1]) <= 30:
+
+    # Any numbers 0 or less check
+    if int(date[1]) <= 00 or int(date[2]) <= 00 or int(date[3]) <= 0000:
+        validDate = False
+
+    elif date[2] in ['04', '06', '09', '11'] and int(date[1]) <= 30:
         day, month, year = date[1], date[2], date[3]
         validDate = True
     
@@ -62,10 +49,17 @@ for date in matches:
         validDate = False
 
     if validDate:
-        newDate = f'{day}-{monthDict[month]}-{year}'
+        newDate = f'{day}-{month}-{year}'
         formattedMatches.append(newDate)
     else:
         print(f'{day}-{month}-{year} is NOT a valid date.')
     
 
-print('\n'.join(formattedMatches))
+formattedMatches = '\n'.join(formattedMatches)
+
+print(formattedMatches)
+
+pyperclip.copy(formattedMatches)
+
+
+
